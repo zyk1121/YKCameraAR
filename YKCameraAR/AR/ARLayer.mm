@@ -14,6 +14,7 @@
 #include <pthread.h>
 #import "UIKitMacros.h"
 #import "IShowPanoTools.h"
+#import <CoreMotion/CoreMotion.h>
 
 pthread_mutex_t mutRender = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t mutRender2 = PTHREAD_MUTEX_INITIALIZER;
@@ -30,6 +31,12 @@ pthread_mutex_t mutRender2 = PTHREAD_MUTEX_INITIALIZER;
 }
 @property (nonatomic, strong) CADisplayLink *displayLink;   // 绘制fps
 @property (nonatomic, assign) BOOL isAPPActive;
+
+@property (nonatomic, strong) CMMotionManager *motionManager;
+/*!
+ *  @brief  是否使用方向传感器自动移动视角
+ */
+@property (nonatomic, getter=isMotionEnable) BOOL motionEnable;
 
 @end
 
@@ -60,6 +67,7 @@ pthread_mutex_t mutRender2 = PTHREAD_MUTEX_INITIALIZER;
     
     textureID = [self getTextureIDFromImage:[UIImage imageNamed:@"test.jpeg"]];
 //    NSLog(@"%d", textureID);
+    _motionManager = [[CMMotionManager alloc] init];
 }
 
 
@@ -298,6 +306,8 @@ pthread_mutex_t mutRender2 = PTHREAD_MUTEX_INITIALIZER;
     glDisableClientState(GL_VERTEX_ARRAY);
 }
 
+float changeValue = 0;
+
 - (void)drawTextureImage
 {
     glMatrixMode(GL_MODELVIEW);
@@ -314,11 +324,19 @@ pthread_mutex_t mutRender2 = PTHREAD_MUTEX_INITIALIZER;
     static float x = -1;
     static float w = 0.2;
     
-    if (x >= 0.5) {
-        x = 0.5;
+    if (self.motionEnable) {
+        x = changeValue;
     } else {
-        x += 0.01;
+        if (x >= 0.5) {
+            x = 0.5;
+            if (!self.motionEnable) {
+                [self setMotionEnable:YES];
+            }
+        } else {
+            x += 0.01;
+        }
     }
+    
     
     
     GLfloat coords[] = {
@@ -366,6 +384,9 @@ pthread_mutex_t mutRender2 = PTHREAD_MUTEX_INITIALIZER;
     
     if (x >= 0.5) {
         x = 0.5;
+//        if (!self.motionEnable) {
+//            [self setMotionEnable:YES];
+//        }
     } else {
         x += 0.01;
     }
@@ -494,6 +515,40 @@ pthread_mutex_t mutRender2 = PTHREAD_MUTEX_INITIALIZER;
     CGContextRelease(brushContext);
     
     return textureBuffer;
+}
+
+/*!
+ *  @brief  是否使用方向传感器自动移动视角
+ */
+- (void)setMotionEnable:(BOOL)motionEnable
+{
+    _motionEnable = motionEnable;
+    if (motionEnable) {
+        if (self.motionManager.isDeviceMotionAvailable) {
+            
+            self.motionManager.deviceMotionUpdateInterval = 0.05;
+            __weak ARLayer* weakSelf = self;
+            [weakSelf.motionManager startDeviceMotionUpdatesToQueue:[NSOperationQueue mainQueue] withHandler:^(CMDeviceMotion * _Nullable motion, NSError * _Nullable error) {
+                __strong ARLayer* strongSelf = self;
+                double gravityX = motion.gravity.x;
+                double gravityY = motion.gravity.y;
+                double gravityZ = motion.gravity.z;
+                
+                double roll = motion.attitude.roll/M_PI*180.0;
+                double pitch = motion.attitude.pitch/M_PI*180.0;
+                double yaw = -motion.attitude.yaw/M_PI*180.0-90;//  偏转90度
+                //                NSLog(@"%lf",yaw);
+                // 获取手机的倾斜角度：
+                double zTheta = atan2(gravityZ,sqrtf(gravityX*gravityX+gravityY*gravityY))/M_PI*180.0;
+//                NSLog(@"%lf",zTheta);
+                changeValue = zTheta / 90;
+                
+            }];
+        }
+    } else {
+        
+        [self.motionManager stopDeviceMotionUpdates];
+    }
 }
 
 

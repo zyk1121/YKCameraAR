@@ -21,6 +21,7 @@
 		7695AFA91E501AB4006B15D5 /* ARGLContextManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 7695AFA81E501AB4006B15D5 /* ARGLContextManager.m */; };
 		7695AFAC1E502128006B15D5 /* IShowPanoTools.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7695AFAA1E502128006B15D5 /* IShowPanoTools.cpp */; };
 		7695AFAE1E503699006B15D5 /* test.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = 7695AFAD1E503699006B15D5 /* test.jpeg */; };
+		7695AFB11E504364006B15D5 /* CoreMotion.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7695AFB01E504364006B15D5 /* CoreMotion.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -46,6 +47,7 @@
 		7695AFAA1E502128006B15D5 /* IShowPanoTools.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = IShowPanoTools.cpp; sourceTree = "<group>"; };
 		7695AFAB1E502128006B15D5 /* IShowPanoTools.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IShowPanoTools.h; sourceTree = "<group>"; };
 		7695AFAD1E503699006B15D5 /* test.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = test.jpeg; sourceTree = "<group>"; };
+		7695AFB01E504364006B15D5 /* CoreMotion.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMotion.framework; path = System/Library/Frameworks/CoreMotion.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -53,6 +55,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7695AFB11E504364006B15D5 /* CoreMotion.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -64,6 +67,7 @@
 			children = (
 				7695AF811E500A7A006B15D5 /* YKCameraAR */,
 				7695AF801E500A7A006B15D5 /* Products */,
+				7695AFAF1E504364006B15D5 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -125,6 +129,14 @@
 				7695AF9F1E50189B006B15D5 /* icon_takephoto_select@3x.png */,
 			);
 			path = Camera;
+			sourceTree = "<group>";
+		};
+		7695AFAF1E504364006B15D5 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				7695AFB01E504364006B15D5 /* CoreMotion.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -366,6 +378,7 @@
 				7695AF981E500A7A006B15D5 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
